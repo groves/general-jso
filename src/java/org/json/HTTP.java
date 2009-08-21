@@ -1,31 +1,5 @@
 package org.json;
 
-/*
-Copyright (c) 2002 JSON.org
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-The Software shall be used for Good, not Evil.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-
-import java.util.Iterator;
-
 /**
  * Convert an HTTP header to a JSONObject and back.
  * @author JSON.org
@@ -125,8 +99,6 @@ public class HTTP {
      *  information.
      */
     public static String toString(JSONObject o) throws JSONException {
-        Iterator     keys = o.keys();
-        String       s;
         StringBuffer sb = new StringBuffer();
         if (o.has("Status-Code") && o.has("Reason-Phrase")) {
             sb.append(o.getString("HTTP-Version"));
@@ -146,14 +118,13 @@ public class HTTP {
             throw new JSONException("Not enough material for an HTTP header.");
         }
         sb.append(CRLF);
-        while (keys.hasNext()) {
-            s = keys.next().toString();
-            if (!s.equals("HTTP-Version")      && !s.equals("Status-Code") &&
-                    !s.equals("Reason-Phrase") && !s.equals("Method") &&
-                    !s.equals("Request-URI")   && !o.isNull(s)) {
-                sb.append(s);
+        for (String key : o.keys()) {
+            if (!key.equals("HTTP-Version")      && !key.equals("Status-Code") &&
+                    !key.equals("Reason-Phrase") && !key.equals("Method") &&
+                    !key.equals("Request-URI")   && !o.isNull(key)) {
+                sb.append(key);
                 sb.append(": ");
-                sb.append(o.getString(s));
+                sb.append(o.getString(key));
                 sb.append(CRLF);
             }
         }

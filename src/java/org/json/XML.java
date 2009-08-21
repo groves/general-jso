@@ -1,31 +1,5 @@
 package org.json;
 
-/*
-Copyright (c) 2002 JSON.org
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-The Software shall be used for Good, not Evil.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-
-import java.util.Iterator;
-
 
 /**
  * This provides static methods to convert an XML text into a JSONObject,
@@ -96,9 +70,9 @@ public class XML {
         }
         return sb.toString();
     }
-    
+
     /**
-     * Throw an exception if the string contains whitespace. 
+     * Throw an exception if the string contains whitespace.
      * Whitespace is not allowed in tagNames and attributes.
      * @param string
      * @throws JSONException
@@ -110,7 +84,7 @@ public class XML {
     	}
     	for (i = 0; i < length; i += 1) {
 		    if (Character.isWhitespace(string.charAt(i))) {
-		    	throw new JSONException("'" + string + 
+		    	throw new JSONException("'" + string +
 		    			"' contains a space character.");
 		    }
 		}
@@ -193,7 +167,7 @@ public class XML {
         	t = x.nextToken();
             if (name == null) {
                 throw x.syntaxError("Mismatched close tag" + t);
-            }            
+            }
             if (!t.equals(name)) {
                 throw x.syntaxError("Mismatched " + name + " and " + t);
             }
@@ -329,8 +303,6 @@ public class XML {
         int          i;
         JSONArray    ja;
         JSONObject   jo;
-        String       k;
-        Iterator     keys;
         int          len;
         String       s;
         Object       v;
@@ -347,10 +319,8 @@ public class XML {
 // Loop thru the keys.
 
             jo = (JSONObject)o;
-            keys = jo.keys();
-            while (keys.hasNext()) {
-                k = keys.next().toString();
-                v = jo.opt(k);
+            for (String key : jo.keys()) {
+                v = jo.opt(key);
                 if (v == null) {
                 	v = "";
                 }
@@ -362,7 +332,7 @@ public class XML {
 
 // Emit content in body
 
-                if (k.equals("content")) {
+                if (key.equals("content")) {
                     if (v instanceof JSONArray) {
                         ja = (JSONArray)v;
                         len = ja.length();
@@ -385,25 +355,25 @@ public class XML {
                     	v = ja.get(i);
                     	if (v instanceof JSONArray) {
                             b.append('<');
-                            b.append(k);
+                            b.append(key);
                             b.append('>');
                     		b.append(toString(v));
                             b.append("</");
-                            b.append(k);
+                            b.append(key);
                             b.append('>');
                     	} else {
-                    		b.append(toString(v, k));
+                    		b.append(toString(v, key));
                     	}
                     }
                 } else if (v.equals("")) {
                     b.append('<');
-                    b.append(k);
+                    b.append(key);
                     b.append("/>");
 
 // Emit a new tag <k>
 
                 } else {
-                    b.append(toString(v, k));
+                    b.append(toString(v, key));
                 }
             }
             if (tagName != null) {

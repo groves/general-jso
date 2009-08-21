@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project name="general-jso" default="compile" basedir=".">
+  <!-- project metadata -->
+  <property name="lib.name"    value="general-jso"/>
+
+  <!-- various directories used when building things -->
+  <property name="src.dir"     value="src/java"/>
+  <property name="deploy.dir"  value="dist"/>
+  <property name="classes.dir" value="${deploy.dir}/classes"/>
+
+  <!-- declare our classpath -->
+  <path id="classpath">
+    <pathelement location="${classes.dir}"/>
+  </path>
+
+  <!-- prepares the application directories -->
+  <target name="prepare">
+    <mkdir dir="${deploy.dir}"/>
+    <mkdir dir="${classes.dir}"/>
+  </target>
+
+  <!-- cleans out the intermediate build files -->
+  <target name="clean" description="Cleans out build results.">
+    <delete dir="${classes.dir}"/>
+    <delete failonerror="false"><fileset dir="${deploy.dir}" includes="*.jar"/></delete>
+  </target>
+
+  <!-- wipes the entire build directory clean -->
+  <target name="distclean" description="Completely removes build result directory.">
+    <delete dir="${deploy.dir}"/>
+  </target>
+
+  <!-- build the java class files -->
+  <target name="compile" depends="prepare" description="Compiles the code.">
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
+           debug="on" optimize="${build.optimize}" source="1.5" target="1.5" encoding="utf-8">
+      <classpath refid="classpath"/>
+      <compilerarg value="-Xlint"/>
+      <compilerarg value="-Xlint:-serial"/>
+    </javac>
+  </target>
+
+  <!-- builds our distribution jar file -->
+  <target name="dist" depends="prepare,compile" description="Compiles code, builds jar file.">
+    <jar destfile="${deploy.dir}/${lib.name}.jar" basedir="${classes.dir}">
+      <exclude name="**/tests/**"/>
+    </jar>
+  </target>
+</project>

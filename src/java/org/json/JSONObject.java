@@ -708,9 +708,14 @@ public class JSONObject {
 
 
     /**
+     * Get an enumeration of the entries of the JSONObject.
+     */
+    public Iterable<Entry<String, Object>> entries() {
+        return this.map.entrySet();
+    }
+
+    /**
      * Get an enumeration of the keys of the JSONObject.
-     *
-     * @return An iterator of the keys.
      */
     public Iterable<String> keys() {
         return this.map.keySet();
